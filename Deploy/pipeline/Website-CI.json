@@ -1,0 +1,229 @@
+{
+  "options": [
+    {
+      "enabled": false,
+      "definition": { "id": "5d58cc01-7c75-450c-be18-a388ddb129ec" },
+      "inputs": {
+        "branchFilters": "[\"+refs/heads/*\"]",
+        "additionalFields": "{}"
+      }
+    },
+    {
+      "enabled": false,
+      "definition": { "id": "a9db38f9-9fdc-478c-b0f9-464221e58316" },
+      "inputs": {
+        "workItemType": "Bug",
+        "assignToRequestor": "true",
+        "additionalFields": "{}"
+      }
+    }
+  ],
+  "variables": {
+    "ImageName": { "value": "website" },
+    "location": { "value": "southeastasia" },
+    "resourcegroup": { "value": "TailwindTraderWeb" },
+    "system.debug": { "value": "false", "allowOverride": true },
+    "useremail": { "value": "rimman@microsoft.com" }
+  },
+  "retentionRules": [
+    {
+      "branches": ["+refs/heads/*"],
+      "artifacts": [],
+      "artifactTypesToDelete": ["FilePath", "SymbolStore"],
+      "daysToKeep": 10,
+      "minimumToKeep": 1,
+      "deleteBuildRecord": true,
+      "deleteTestResults": true
+    }
+  ],
+  "properties": {},
+  "tags": [],
+  "_links": {
+  },
+  "jobAuthorizationScope": 1,
+  "jobTimeoutInMinutes": 60,
+  "jobCancelTimeoutInMinutes": 5,
+  "badgeEnabled": true,
+  "process": {
+    "phases": [
+      {
+        "steps": [
+          {
+            "environment": {},
+            "enabled": true,
+            "continueOnError": false,
+            "alwaysRun": false,
+            "displayName": "Azure Deployment:Create Or Update Resource Group action on $(resourcegroup)",
+            "timeoutInMinutes": 0,
+            "condition": "succeeded()",
+            "task": {
+              "id": "94a74903-f93f-4075-884f-dc11f34058b4",
+              "versionSpec": "2.*",
+              "definitionType": "task"
+            },
+            "inputs": {
+              "ConnectedServiceName": "07d07eeb-e3c0-4d5e-909c-34e055dee57d",
+              "action": "Create Or Update Resource Group",
+              "resourceGroupName": "$(resourcegroup)",
+              "location": "$(location)",
+              "templateLocation": "Linked artifact",
+              "csmFileLink": "",
+              "csmParametersFileLink": "",
+              "csmFile": "Deploy/deployment.json",
+              "csmParametersFile": "",
+              "overrideParameters": "",
+              "deploymentMode": "Incremental",
+              "enableDeploymentPrerequisites": "None",
+              "deploymentGroupEndpoint": "",
+              "project": "",
+              "deploymentGroupName": "",
+              "copyAzureVMTags": "true",
+              "runAgentServiceAsUser": "false",
+              "userName": "",
+              "password": "",
+              "outputVariable": "",
+              "deploymentName": "",
+              "deploymentOutputs": "",
+              "addSpnToEnvironment": "false"
+            }
+          },
+          {
+            "environment": {},
+            "enabled": true,
+            "continueOnError": false,
+            "alwaysRun": false,
+            "displayName": "ARM Outputs",
+            "timeoutInMinutes": 0,
+            "condition": "succeeded()",
+            "task": {
+              "id": "584bcff2-3353-4f11-872b-6ba01267a972",
+              "versionSpec": "5.*",
+              "definitionType": "task"
+            },
+            "inputs": {
+              "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+              "ConnectedServiceNameARM": "07d07eeb-e3c0-4d5e-909c-34e055dee57d",
+              "resourceGroupName": "$(resourcegroup)",
+              "prefix": "",
+              "outputNames": "",
+              "whenLastDeploymentIsFailed": "fail",
+              "deploymentNameFilter": ""
+            }
+          },
+          {
+            "environment": {},
+            "enabled": true,
+            "continueOnError": false,
+            "alwaysRun": false,
+            "displayName": "Build an image",
+            "timeoutInMinutes": 0,
+            "condition": "succeeded()",
+            "task": {
+              "id": "e28912f1-0114-4464-802a-a3a35437fd16",
+              "versionSpec": "1.*",
+              "definitionType": "task"
+            },
+            "inputs": {
+              "containerregistrytype": "Azure Container Registry",
+              "dockerRegistryEndpoint": "",
+              "azureSubscriptionEndpoint": "07d07eeb-e3c0-4d5e-909c-34e055dee57d",
+              "azureContainerRegistry": "$(acr).azurecr.io",
+              "command": "Build an image",
+              "dockerFile": "Source/Tailwind.Traders.Web/Dockerfile",
+              "arguments": "-t $(acr).azurecr.io/$(ImageName):$(Build.BuildId)",
+              "pushMultipleImages": "false",
+              "tagMultipleImages": "false",
+              "imageName": "$(ImageName):$(Build.BuildId)",
+              "imageNamesPath": "",
+              "qualifyImageName": "true",
+              "qualifySourceImageName": "false",
+              "includeSourceTags": "false",
+              "includeLatestTag": "true",
+              "addDefaultLabels": "true",
+              "useDefaultContext": "true",
+              "buildContext": "",
+              "imageDigestFile": "",
+              "containerName": "",
+              "ports": "",
+              "volumes": "",
+              "envVars": "",
+              "workingDirectory": "",
+              "entrypointOverride": "",
+              "containerCommand": "",
+              "runInBackground": "true",
+              "restartPolicy": "no",
+              "maxRestartRetries": "",
+              "dockerHostEndpoint": "",
+              "enforceDockerNamingConvention": "true",
+              "memoryLimit": ""
+            }
+          },
+          {
+            "environment": {},
+            "enabled": true,
+            "continueOnError": false,
+            "alwaysRun": false,
+            "displayName": "Push Image",
+            "timeoutInMinutes": 0,
+            "condition": "succeeded()",
+            "task": {
+              "id": "e28912f1-0114-4464-802a-a3a35437fd16",
+              "versionSpec": "1.*",
+              "definitionType": "task"
+            },
+            "inputs": {
+              "containerregistrytype": "Azure Container Registry",
+              "dockerRegistryEndpoint": "",
+              "azureSubscriptionEndpoint": "07d07eeb-e3c0-4d5e-909c-34e055dee57d",
+              "azureContainerRegistry": "$(acr).azurecr.io",
+              "command": "Push an image",
+              "dockerFile": "**/Dockerfile",
+              "arguments": "",
+              "pushMultipleImages": "false",
+              "tagMultipleImages": "false",
+              "imageName": "$(ImageName):$(Build.BuildId)",
+              "imageNamesPath": "",
+              "qualifyImageName": "true",
+              "qualifySourceImageName": "false",
+              "includeSourceTags": "false",
+              "includeLatestTag": "false",
+              "addDefaultLabels": "true",
+              "useDefaultContext": "true",
+              "buildContext": "",
+              "imageDigestFile": "",
+              "containerName": "",
+              "ports": "",
+              "volumes": "",
+              "envVars": "",
+              "workingDirectory": "",
+              "entrypointOverride": "",
+              "containerCommand": "",
+              "runInBackground": "true",
+              "restartPolicy": "no",
+              "maxRestartRetries": "",
+              "dockerHostEndpoint": "",
+              "enforceDockerNamingConvention": "true",
+              "memoryLimit": ""
+            }
+          }
+        ],
+        "name": "Agent job 1",
+        "refName": "Phase_1",
+        "condition": "succeeded()",
+        "target": {
+          "executionOptions": { "type": 0 },
+          "allowScriptsAuthAccessOption": false,
+          "type": 1
+        },
+        "jobAuthorizationScope": 1,
+        "jobCancelTimeoutInMinutes": 1
+      }
+    ],
+    "type": 1
+  },
+  "repository": {
+  },
+  "processParameters": {},
+  "quality": 1,
+  "name": "Website-CI"
+}
