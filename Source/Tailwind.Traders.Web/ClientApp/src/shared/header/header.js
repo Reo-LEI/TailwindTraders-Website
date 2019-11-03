@@ -113,7 +113,8 @@ class Header extends Component {
                             <Link className="main-nav__item" to="/list/diytools">
                                 {t('shared.header.diytools')}
                             </Link>
-                            <Link className="main-nav__item" to="https://1656988059.wixsite.com/garden">
+                            <Link className="main-nav__item" to="">
+                                <a href="https://1656988059.wixsite.com/garden"></a>
                                 {t('shared.header.designerHome')}
                             </Link>
                             <div className="main-nav__actions">
