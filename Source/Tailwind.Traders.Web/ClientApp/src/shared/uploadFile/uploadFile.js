@@ -50,9 +50,9 @@ class UploadFile extends Component {
         const { title, subtitle } = this.props;
         return (
             <Fragment>
-                <div className="upload__logo">
+                {/* <div className="upload__logo">
                     <img srcSet={`${Logo} 1x, ${Logo} 2x`}/>
-                </div>
+                </div> */}
 
                 <form className="upload">
                     <Alert stack={{ limit: 1 }} />
